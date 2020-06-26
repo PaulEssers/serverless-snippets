@@ -1,0 +1,13 @@
+service: simplelambda
+
+provider:
+  name: aws
+  runtime: python3.7 
+  timeout: 120
+
+functions:
+  returnInput:
+    handler: handler.endpoint
+ 
+plugins:
+  - serverless-python-requirements

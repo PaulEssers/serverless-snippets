@@ -21,6 +21,8 @@ app = Flask(__name__)
 @app.route('/', methods=["POST", "GET"])
 def entrypoint():
     
+    # This function is invoked when you post a request to API gateway.
+    
     lc = boto3.client('lambda')
     
     df = pd.DataFrame({'Column1': [1,2,3,4,5], 'Column2': ['a','b','c','d','e']})
@@ -47,9 +49,7 @@ def endpoint(event, context):
     # Convert the dict back into a dataframe    
     df = pd.DataFrame(event['df'])
 
-
     current_time = datetime.datetime.now().time()
-    
     response = {
         "message": "Hello " + event['name'] + ", the current time is " + str(current_time),
         "dataframe": df.to_dict()

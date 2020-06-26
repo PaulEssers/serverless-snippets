@@ -1,0 +1,36 @@
+{
+	"firsttable": {
+		"SomeID": {
+			"0": 1,
+			"1": 2,
+			"2": 3
+		},
+		"Colour": {
+			"0": "Green",
+			"1": "Red",
+			"2": "Blue"
+		},
+		"SomeSetting": {
+			"0": true,
+			"1": false,
+			"2": true
+		}
+	},
+	"secondtable": {
+		"SomeID": {
+			"0": 4,
+			"1": 5,
+			"2": 6
+		},
+		"Colour": {
+			"0": "Purple",
+			"1": "Pink",
+			"2": "Blue"
+		},
+		"SomeSetting": {
+			"0": true,
+			"1": false,
+			"2": false
+		}
+	}
+}

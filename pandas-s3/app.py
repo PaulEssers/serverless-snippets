@@ -7,6 +7,9 @@ Created on Fri Feb 28 07:51:38 2020
 
 import io
 import os
+from datetime import datetime
+
+
 import pandas as pd
 import json
 import logging
@@ -40,7 +43,7 @@ if not s3_resource.Bucket(bucket_name) in s3_resource.buckets.all():
 
 
 @app.route('/', methods=["POST"])
-def entrypoint():
+def saving():
     """
     Will save any input to S3 as a csv and a JSON and give back the filenames.
     """
@@ -56,8 +59,9 @@ def entrypoint():
         filename_excel = req_data['filename'] + '.xlsx'
         filename_json  = req_data['filename'] + '.json'
     else:
-        filename_excel = 'tmp.xlsx'
-        filename_json  = 'tmp.json'
+        now = datetime.now().strftime("%Y%m%d_%H%M")
+        filename_excel = now + '_test.xlsx'
+        filename_json  = now + '_test.json'
 
     
     # The excel function takes a dict of pandas dataframes.    
@@ -74,6 +78,19 @@ def entrypoint():
     JSON_resp = save_JSON_S3(req_data, bucket_name, filename_json)
     
     return {'Excel': Excel_resp, 'JSON': JSON_resp}
+
+@app.route('/load/<string:filename>', methods=["GET"])
+def loading(filename):
+    """
+    Will load JSON file from S3. 
+    
+    Not sure how to load excel, but excel should in any case only be used to
+    send files to the end user.
+    """
+        
+    return load_JSON_S3(bucket_name, filename)
+
+
 
 def save_excel_S3(dfs, bucket, filename = 'tmp.xlsx'):
     """
@@ -110,7 +127,7 @@ def save_excel_S3(dfs, bucket, filename = 'tmp.xlsx'):
               df.to_excel(writer, sheet_name = key)
        data = output.getvalue()    
            
-    response = s3.put_object(ACL = 'public-read', Bucket = bucket, Key = filename, Body = data)
+    response = s3.put_object(Bucket = bucket, Key = filename, Body = data) # ACL = 'public-read'
 
     if response['ResponseMetadata']['HTTPStatusCode'] == 200:
         # If it succeeded, append the file url to the response   
@@ -169,7 +186,7 @@ def load_JSON_S3(bucket, filename):
     dict
     """
     
-    file_content = s3.get_object(Bucket = bucket, key = filename)['Body'].read().decode('utf-8')
+    file_content = s3.get_object(Bucket = bucket, Key = filename)['Body'].read().decode('utf-8')
     return json.loads(file_content)
 
 

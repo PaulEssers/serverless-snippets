@@ -17,10 +17,13 @@ provider:
         - s3:ListBucket
         - s3:ListBuckets 
         - s3:ListAllMyBuckets
+        - s3:GetBucketLocation
         - s3:PutObject
-      Resource: 
-        - "arn:aws:s3:::bucket-of-panda-goo/*" # access all files in this bucket.
-        - "arn:aws:s3:::*" # access all bucket names to be able to list them
+        - s3:GetObject
+        - s3:DeleteObject # needed to overwrite?
+      Resource: "*" 
+   #     - "arn:aws:s3:::bucket-of-panda-goo/*" # access all files in this bucket.
+   #     - "arn:aws:s3:::*" # access all bucket names to be able to list them
   environment: 
     # For calling lambdas, we need a full ARN (or at least the service and stage)
     ARN_PREFIX: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-"
